@@ -69,76 +69,105 @@ class Solution
 public:
     bool isMatch(string s, string p)
     {
-        if (s.size() == 0 && p.size() == 0)
+        int m = s.length();
+        int n = p.length();
+
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, -1));
+
+        return solve(s, p, 0, 0, dp);
+    }
+
+private:
+    bool solve(string &s, string &p, int i, int j, vector<vector<int>> &dp)
+    {
+        if (i >= s.size() && j >= p.size())
         {
             return true;
         }
-        if (p.size() == 0)
+        if (j >= p.size())
         {
             return false;
         }
 
-        string res = "";
-        res += p[0];
-
-        for (int i = 1; i < p.length(); i++)
+        if (dp[i][j] != -1)
         {
-            if (p[i] == p[i - 1] && p[i] == '*')
-            {
-                continue;
-            }
-            else
-            {
-                res += p[i];
-            }
+            return dp[i][j];
         }
 
-        int m = s.length();
-        int n = res.length();
-        bool dp[m + 1][n + 1];
+        bool match = i < s.size() && (s[i] == p[j] || p[j] == '.');
 
-        // both are empty
-        dp[0][0] = true;
-
-        for (int i = 1; i < m + 1; i++)
+        if ((j + 1) < p.size() && p[j + 1] == '*')
         {
-            dp[i][0] = false;
+            bool dontTake = solve(s, p, i, j + 2, dp);
+            bool take = match ? solve(s, p, i + 1, j, dp) : false;
+            return dp[i][j] = dontTake || take;
         }
 
-        for (int j = 1; j < n + 1; j++)
+        if (match)
         {
-            dp[0][j] = false;
+            return dp[i][j] = solve(s, p, i + 1, j + 1, dp);
         }
 
-        // case for the empty string s and only char at p being *
-        if (p[0] == '*')
-        {
-            dp[0][1] = true;
-        }
-
-        for (int i = 1; i < m + 1; i++)
-        {
-            for (int j = 1; j < n + 1; j++)
-            {
-                if (s[i - 1] == res[j - 1] || res[j - 1] == '.')
-                {
-                    dp[i][j] = dp[i - 1][j - 1];
-                }
-                else
-                {
-                    if (res[j - 1] == '*')
-                    {
-                        dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-                    }
-                    else
-                    {
-                        dp[i][j] = false;
-                    }
-                }
-            }
-        }
-
-        return dp[m][n];
+        return dp[i][j] = false;
     }
 };
+
+// DP SOLUTION
+
+// class Solution
+// {
+// public:
+//     bool isMatch(string s, string p)
+//     {
+//         int m = s.length();
+//         int n = p.length();
+
+//         bool dp[m + 1][n + 1];
+
+//         dp[0][0] = true;
+
+//         for (int i = 1; i < m + 1; i++)
+//         {
+//             dp[i][0] = false;
+//         }
+
+//         for (int i = 1; i < n + 1; i++)
+//         {
+//             if (p[i - 1] == '*')
+//             {
+//                 dp[0][i] = dp[0][i - 2];
+//             }
+//             else
+//             {
+//                 dp[0][] = false;
+//             }
+//         }
+
+//         for (int i = 1; i < m + 1; i++)
+//         {
+//             for (int j = 1; j < n + 1; j++)
+//             {
+//                 if (p[j - 1] == '*')
+//                 {
+//                     dp[i][j] = dp[i][j - 2];
+
+//                     if (p[j - 2] == '.' || p[j - 2] == s[i - 1])
+//                     {
+//                         dp[i][j] = dp[i][j] || dp[i - 1][j];
+//                     }
+//                 }
+//                 else if (p[j - 1] == s[i - 1] || p[j - 1] == '.')
+//                 {
+//                     dp[i][j] = dp[i - 1][j - 1];
+//                 }
+//                 else
+//                 {
+//                     dp[i][j] = false;
+//                 }
+//             }
+//         }
+
+//         return dp[m][n];
+//     }
+// };
 // @lc code=end
