@@ -61,6 +61,49 @@ class Solution
 public:
     vector<vector<int>> kClosest(vector<vector<int>> &points, int k)
     {
+        priority_queue<pair<int, int>> q;
+        for (int i = 0; i < points.size(); i++)
+        {
+            pair<int, int> p = {solve(points[i]), i};
+
+            if (q.size() < k)
+            {
+                q.push(p);
+            }
+            else if (p.first < q.top().first)
+            {
+                q.pop();
+                q.push(p);
+            }
+        }
+
+        vector<vector<int>> res;
+
+        while (!q.empty())
+        {
+            int idx = q.top().second;
+            q.pop();
+            res.push_back(points[idx]);
+        }
+
+        return res;
+    }
+
+private:
+    int
+    solve(vector<int> &point)
+    {
+        return point[0] * point[0] + point[1] * point[1];
+    }
+};
+
+// SORT COMPARATOR FUNCTION
+/*
+class Solution
+{
+public:
+    vector<vector<int>> kClosest(vector<vector<int>> &points, int k)
+    {
         sort(points.begin(), points.end(), [&](vector<int> &a, vector<int> &b)
              { return solve(a) < solve(b); });
 
@@ -74,4 +117,5 @@ private:
         return point[0] * point[0] + point[1] * point[1];
     }
 };
+*/
 // @lc code=end
