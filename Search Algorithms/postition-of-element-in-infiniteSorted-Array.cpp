@@ -50,6 +50,10 @@ int main()
     if (ans == -1)
         cout << "Element not found";
     else
-        cout << "Element found at index " << ans;
+        cout << endl
+             << endl
+             << "Element found at index -> [" << ans << "]"
+             << endl
+             << endl;
     return 0;
 }
