@@ -56,97 +56,128 @@
 class Solution
 {
 public:
-    bool search(vector<int> &nums, int target)
+    bool binary_search(vector<int> &arr, int target, int start, int end)
     {
-        int pivot = findPivotWithDuplicates(nums);
-
-        if (pivot == -1)
+        while (start <= end)
         {
-            return binarySearch(nums, target, 0, nums.size() - 1);
-        }
-
-        if (nums[pivot] == target)
-        {
-
-            return pivot;
-        }
-
-        if (target >= nums[0])
-        {
-            return binarySearch(nums, target, 0, pivot - 1);
-        }
-
-        return binarySearch(nums, target, pivot + 1, nums.size() - 1);
-    }
-
-private:
-    int binarySearch(vector<int> &nums, int target, int low, int high)
-    {
-        while (low <= high)
-        {
-            int mid = low + (high - low) / 2;
-
-            if (target < nums[mid])
+            int mid = start + (end - start) / 2;
+            if (arr[mid] < target)
             {
-                high = mid - 1;
+                // the value to be searched is greater than mid value thus target lies somewhere between mid+1 and end; hence we should continue search there.
+                start = mid + 1;
             }
-            else if (target > nums[mid])
+            else if (arr[mid] > target)
             {
-                low = mid + 1;
+                // the value to be searched is smaller than mid value thus target lies somewhere between start and mid-1; hence we should continue search there.
+                end = mid - 1;
             }
             else
             {
-                return mid;
+                // value searched is mid value return mid index
+                return true;
             }
         }
-
-        return -1;
+        return false;
     }
 
-    int findPivotWithDuplicates(vector<int> &nums)
+    bool search(vector<int> &nums, int target)
     {
-        int start = 0, end = nums.size() - 1;
+
+        // idea is to access the pivot value first.
+        // Pivot value in rotated array is the peak value after which values start decreasing and the increase again . Ex. [4,5,6,7,0,1,2,3] -> Rotated sorted array -> here 7 is pivot value.
+        // Once we have the pivot, then by comparing it with target { and ranges } we can decide which array range should be used to apply binary search and search the value in O(log N) time
+
+        // Finding pviot achieved by pivot()
+        int pivotIndex = pivotWithDuplicates(nums);
+        // Now we have the pivot, we have to binary search based on ranges.
+        if (pivotIndex == -1)
+        {
+            // Implies array is not rotated hence normal binary search applies
+            return binary_search(nums, target, 0, nums.size() - 1);
+        }
+
+        if (nums[pivotIndex] == target)
+        {
+            return true;
+        }
+
+        if (nums[0] <= target)
+        {
+            // value to be searched is greater than the first value thus target lies between start and pivotIndex
+            return binary_search(nums, target, 0, pivotIndex - 1);
+        }
+        else
+        {
+            // value to be searched is smaller than the first value thus target lies between pivotIndex and end
+            return binary_search(nums, target, pivotIndex + 1, nums.size() - 1);
+        }
+    }
+
+    int pivotWithDuplicates(vector<int> &nums)
+    {
+        // For finding pivot, general approach of binary search is used
+        // We take a mid value and based on the values ahead, behind of mid value and start value make certain inferences
+        int start = 0;
+        int end = nums.size() - 1;
 
         while (start <= end)
         {
             int mid = start + (end - start) / 2;
-
             if (mid < end && nums[mid] > nums[mid + 1])
             {
+                // mid value > mid+1 value in an ascending sorted rotated array
+                // then mid value is certainly the pivot value as in an ascending array mid value < (mid+1) value {distinct values} thus mid and mid+1 is where the break happened.
+                // Ex. 5 6 1 -> mid value = 6 , mid+1 value = 1 => mid>mid+1 => mid is pivot
+                // mid<end check for preventing accessing array index out of bound using short circuit &&
                 return mid;
             }
 
             if (mid > start && nums[mid] < nums[mid - 1])
             {
+                // mid value < mid-1 value in an ascending sorted rotated array
+                // then mid-1 valie is certainly the pivot value as in an ascending array mid value > (mid-1) value thus mid-1 and mid is where the break happened
+                // Ex. 5 7 1 2 4 -> mid value = 1 , mid-1 value = 7 => mid-1>mid => mid-1 is pivot
+                // mid>start check for preventing accessing array index out of bound using short circuit &&
                 return mid - 1;
             }
 
-            // if elements at middle, start and end are equal
-            if (nums[mid] == nums[start] && nums[end] == nums[mid])
+            if (nums[start] == nums[mid] && nums[mid] == nums[end])
             {
-                if (start < end && nums[start] > nums[start + 1])
+                // attempt to reduce duplicates from consideration
+
+                if (start == mid && mid == end)
                 {
+                    // implies array not rotated thus normal binary search to be applied
+                    return -1;
+                }
+
+                if (nums[start] > nums[start + 1])
+                {
+                    // from the similar logic used above we can be certain that start is the pivot.
                     return start;
                 }
-
+                // removing duplicate start value if it is not pivot
                 start++;
 
-                if (end > start && nums[end] < nums[end - 1])
+                if (nums[end - 1] > nums[end])
                 {
+                    // from the similar logic used above we can be certain that end is the pivot.
                     return end - 1;
                 }
+                // removing duplicate end value if it is not pivot
                 end--;
             }
-            else if (nums[start] < nums[mid] && (nums[start] == nums[mid] && nums[mid] > nums[end]))
+            else if (nums[start] < nums[mid] || (nums[start] == nums[mid] && nums[mid] > nums[end]))
             {
+                // Implying left sub array is sorted correctly and we should search for the pivot in the right sub array
                 start = mid + 1;
             }
             else
             {
+                // Implying right sub array is sorted correctly and we should search for the pivot in the left sub array
                 end = mid - 1;
             }
         }
-
         return -1;
     }
 };
