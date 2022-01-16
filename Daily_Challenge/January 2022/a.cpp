@@ -78,7 +78,7 @@ int calc(int n)
 
 void solve()
 {
-    vector<vector<int>> v = {{1, 100}, {11, 22}, {1, 11}, {2, 12}};
+    vector<vector<int>> v = {{3, 4}, {2, 3}, {1, 2}};
 
     std::sort(v.begin(), v.end());
 
@@ -92,8 +92,8 @@ int32_t main()
 {
     fast_io;
 
-    int t;
-    cin >> t;
+    int t = 1;
+    // cin >> t;
     while (t--)
     {
         solve();
