@@ -56,44 +56,103 @@
  */
 
 // @lc code=start
+
+// disjoint set union
+
 class Solution
 {
 public:
+    int find(vector<int> &root, int x)
+    {
+        if (root[x] == -1)
+        {
+            return x;
+        }
+
+        return root[x] = find(root, root[x]);
+    }
+
+    void unionSet(vector<int> &root, int x, int y)
+    {
+        int rootX = find(root, x);
+        int rootY = find(root, y);
+
+        if (rootX != rootY)
+        {
+            root[rootY] = rootX;
+        }
+    }
+
     int findCircleNum(vector<vector<int>> &isConnected)
     {
         int n = isConnected.size();
-        int res = 0;
-        vector<int> v(n, 0);
+        vector<int> root(n, -1);
 
         for (int i = 0; i < n; i++)
         {
-            if (v[i] == 0)
+            for (int j = 0; j < n; j++)
+            {
+                if (isConnected[i][j] == 1)
+                {
+                    unionSet(root, i, j);
+                }
+            }
+        }
+
+        int res = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (root[i] == -1)
             {
                 res++;
-                dfs(i, isConnected, v);
             }
         }
 
         return res;
     }
-
-private:
-    void dfs(int node, vector<vector<int>> &isConnected, vector<int> &v)
-    {
-        if (v[node] == 1)
-        {
-            return;
-        }
-
-        v[node] = 1;
-
-        for (int i = 0; i < isConnected.size(); i++)
-        {
-            if (i != node && isConnected[node][i] == 1)
-            {
-                dfs(i, isConnected, v);
-            }
-        }
-    }
 };
+
+// dfs solution
+
+// class Solution
+// {
+// public:
+//     int findCircleNum(vector<vector<int>> &isConnected)
+//     {
+//         int n = isConnected.size();
+//         int res = 0;
+//         vector<int> v(n, 0);
+
+//         for (int i = 0; i < n; i++)
+//         {
+//             if (v[i] == 0)
+//             {
+//                 res++;
+//                 dfs(i, isConnected, v);
+//             }
+//         }
+
+//         return res;
+//     }
+
+// private:
+//     void dfs(int node, vector<vector<int>> &isConnected, vector<int> &v)
+//     {
+//         if (v[node] == 1)
+//         {
+//             return;
+//         }
+
+//         v[node] = 1;
+
+//         for (int i = 0; i < isConnected.size(); i++)
+//         {
+//             if (i != node && isConnected[node][i] == 1)
+//             {
+//                 dfs(i, isConnected, v);
+//             }
+//         }
+//     }
+// };
 // @lc code=end
