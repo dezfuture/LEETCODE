@@ -4,5 +4,6 @@
         "vector": "cpp",
         "valarray": "cpp",
         "thread": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
