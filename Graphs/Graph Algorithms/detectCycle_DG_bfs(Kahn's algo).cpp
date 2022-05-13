@@ -5,8 +5,8 @@ using namespace std;
 
 /*
 
-As we know that topological sort only applies to DAG and if the count in the topological sort is
-not equal to the number of nodes then we can say that there is a cycle otherwise no cycle exists.
+*As we know that topological sort only applies to DAG and if the count in the topological sort is
+*not equal to the number of nodes then we can say that there is a cycle otherwise no cycle exists.
 
 */
 
