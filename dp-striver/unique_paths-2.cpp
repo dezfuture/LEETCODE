@@ -37,7 +37,7 @@ int mazeObstacles(int n, int m, vector<vector<int>> &matrix)
         }
     }
 
-    return dp[n - 1][m - 1] % moda;
+    return dp[n - 1][m - 1] % mod;
 }
 
 // ^ you can space optimize your solution using a vector instead of 2d array.
