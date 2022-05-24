@@ -50,7 +50,7 @@ int getMaxPathSum(vector<vector<int>> &matrix)
 
 // * tabulation
 
-nt getMaxPathSum(vector<vector<int>> &matrix)
+int getMaxPathSum(vector<vector<int>> &matrix)
 {
 
     int n = matrix.size();
