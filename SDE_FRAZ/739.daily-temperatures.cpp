@@ -20,7 +20,7 @@ public:
             {
                 int index = s.top().first;
                 int t = s.top().second;
-
+                s.pop();
                 res[index] = i - index;
             }
 
